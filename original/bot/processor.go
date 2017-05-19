@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"strings"
 
+	"encoding/json"
 	"fmt"
 	"github.com/VG-Tech-Dojo/vg-1day-2017/original/env"
 	"github.com/VG-Tech-Dojo/vg-1day-2017/original/model"
@@ -32,6 +33,15 @@ type (
 
 	// メッセージ本文に対する雑談応答を作るprocessorの構造体です
 	TalkProcessor struct{}
+
+	talkApiResponse struct {
+		status  int
+		message string
+		results struct {
+			perplexity float
+			reply      string
+		}
+	}
 )
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
@@ -89,14 +99,11 @@ func (p *TalkProcessor) Process(msgIn *model.Message) *model.Message {
 		"query":  {text},
 	}
 
-	var json interface{}
+	json := &talkApiResponse{}
 
 	post(talkApiUrl, params, &json)
 
-	result := json.(map[string]interface{})["results"]
-	reply := result.([]interface{})[0].(map[string]interface{})["reply"]
-
 	return &model.Message{
-		Body: reply.(string),
+		Body: json.results.reply,
 	}
 }
