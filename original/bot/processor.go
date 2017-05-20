@@ -5,7 +5,6 @@ import (
 	"regexp"
 	"strings"
 
-	"encoding/json"
 	"fmt"
 	"github.com/VG-Tech-Dojo/vg-1day-2017/original/env"
 	"github.com/VG-Tech-Dojo/vg-1day-2017/original/model"
@@ -35,12 +34,14 @@ type (
 	TalkProcessor struct{}
 
 	talkApiResponse struct {
-		status  int
-		message string
-		results struct {
-			perplexity float
-			reply      string
-		}
+		Status  int             `json:"status"`
+		Message string          `json:"message"`
+		Results []talkApiResult `json:"results"`
+	}
+
+	talkApiResult struct {
+		Perplexity float64 `json:"perplexity"`
+		Reply      string  `json:"reply"`
 	}
 )
 
@@ -99,11 +100,11 @@ func (p *TalkProcessor) Process(msgIn *model.Message) *model.Message {
 		"query":  {text},
 	}
 
-	json := &talkApiResponse{}
+	json := talkApiResponse{}
 
 	post(talkApiUrl, params, &json)
 
 	return &model.Message{
-		Body: json.results.reply,
+		Body: json.Results[0].Reply,
 	}
 }
