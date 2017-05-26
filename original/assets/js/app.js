@@ -12,8 +12,6 @@
       return {
         editing: false,
         editedBody: null,
-        displayedBody: this.body,
-        displayedUserName: this.username || '',
       }
     },
     // 1-1. ユーザー名を表示しよう
@@ -27,7 +25,7 @@
         </div>
       </div>
       <div class="message-body" v-else>
-        <span>{{ displayedBody }} - {{ displayedUserName }}</span>
+        <span>{{ body }} - {{ username }}</span>
         <span class="action-button u-pull-right" v-on:click="edit">&#9998;</span>
         <span class="action-button u-pull-right" v-on:click="remove">&#10007;</span>
       </div>
@@ -39,7 +37,7 @@
       },
       edit() {
         this.editing = true
-        this.editedBody = this.displayedBody
+        this.editedBody = this.body
       },
       cancelEdit() {
         this.editing = false
@@ -48,11 +46,6 @@
       doneEdit() {
         this.updateMessage({id: this.id, body: this.editedBody})
           .then(response => {
-            if (response.error) {
-              alert(response.error.message);
-              return;
-            }
-            this.displayedBody = this.editedBody
             this.cancelEdit()
           })
       }
@@ -108,12 +101,22 @@
           })
         })
       },
-      updateMessage(message) {
-        return fetch(`/api/messages/${message.id}`, {
+      updateMessage(updatedMessage) {
+        return fetch(`/api/messages/${updatedMessage.id}`, {
           method: 'PUT',
-          body: JSON.stringify(message),
+          body: JSON.stringify(updatedMessage),
         })
         .then(response => response.json())
+        .then(response => {
+          if (response.error) {
+            alert(response.error.message);
+            return;
+          }
+          const index = this.messages.findIndex(m => {
+            return m.id === updatedMessage.id
+          })
+          Vue.set(this.messages, index, updatedMessage)
+        })
       },
       clearMessage() {
         this.newMessage = new Message();
