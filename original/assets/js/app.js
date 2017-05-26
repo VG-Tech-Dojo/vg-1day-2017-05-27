@@ -80,7 +80,7 @@
           method: 'POST',
           body: JSON.stringify(message)
         })
-          .then(response => response.json)
+          .then(response => response.json())
           .then(response => {
             if (response.error) {
               alert(response.error.message);
