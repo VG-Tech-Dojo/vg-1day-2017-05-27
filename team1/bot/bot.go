@@ -96,6 +96,23 @@ func NewKeywordBot(out chan *model.Message) *Bot {
 	}
 }
 
+// NewShopBot はメッセージ本文からキーワードを抽出して返す新しいBotの構造体のポインタを返します
+func NewShopBot(out chan *model.Message) *Bot {
+	in := make(chan *model.Message)
+
+	checker := NewRegexpChecker("\\Ashop .*")
+
+	processor := &ShopProcessor{}
+
+	return &Bot{
+		name:      "shopbot",
+		in:        in,
+		out:       out,
+		checker:   checker,
+		processor: processor,
+	}
+}
+
 func (b *Bot) respond(m *model.Message) {
 	message := b.processor.Process(m)
 	b.out <- message
