@@ -28,7 +28,7 @@ type (
 	// メッセージ本文からキーワードを抽出するprocessorの構造体です
 	KeywordProcessor struct{}
 
-	NetaProcessor struct{}
+	WadaiProcessor struct{}
 )
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
@@ -55,7 +55,7 @@ func (p *OmikujiProcessor) Process(msgIn *model.Message) *model.Message {
 }
 
 // Process は"大吉", "吉", "中吉", "小吉", "末吉", "凶"のいずれかがbodyにセットされたメッセージへのポインタを返します
-func (p *NetaProcessor) Process(msgIn *model.Message) *model.Message {
+func (p *WadaiProcessor) Process(msgIn *model.Message) *model.Message {
 	fortunes := []string{
 		"シャーロット英王女、もうすぐ2歳に",
 		"ホーキング博士が警告「人類は100年以内に別の惑星に移住必要」",
