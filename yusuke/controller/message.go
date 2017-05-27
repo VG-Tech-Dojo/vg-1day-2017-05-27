@@ -72,6 +72,7 @@ func (m *Message) Create(c *gin.Context) {
 	}
 
 	// 1-2. ユーザー名を追加しよう
+	msg.UserName = "sample"
 	// ユーザー名が空でも投稿できるようにするかどうかは自分で考えてみよう
 
 	inserted, err := msg.Insert(m.DB)
