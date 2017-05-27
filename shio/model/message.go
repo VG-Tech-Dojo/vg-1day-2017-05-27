@@ -71,7 +71,23 @@ func (m *Message) Insert(db *sql.DB) (*Message, error) {
 }
 
 // 1-3. メッセージを編集しよう
-// ...
+func (m *Message) Update(db *sql.DB) (*Message, error) {
+	res, err := db.Exec(`update message set (body, username) values (?, ?)`, m.Body, m.Username)
+	if err != nil {
+		return nil, err
+	}
+	id, err := res.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+
+	return &Message{
+		ID:   id,
+		Body: m.Body,
+		// 1-2. ユーザー名を追加しよう
+		Username: m.Username,
+	}, nil
+}
 
 // 1-4. メッセージを削除しよう
 // ...
