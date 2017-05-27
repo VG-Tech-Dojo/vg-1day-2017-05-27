@@ -108,7 +108,7 @@ func (m *Message) UpdateByID(c *gin.Context) {
 	}
 
 	if msg.Body == "" {
-		resp := httputil.NewErrorResponse(errors.New("username is missing"))
+		resp := httputil.NewErrorResponse(errors.New("body is missing"))
 		c.JSON(http.StatusBadRequest, resp)
 		return
 	}
@@ -132,5 +132,14 @@ func (m *Message) UpdateByID(c *gin.Context) {
 func (m *Message) DeleteByID(c *gin.Context) {
 	// 1-4. メッセージを削除しよう
 	// ...
-	c.JSON(http.StatusOK, gin.H{})
+	if err := model.DeleteByID(m.DB, c.Param("id")); err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"result": nil,
+		"error":  nil,
+	})
 }
