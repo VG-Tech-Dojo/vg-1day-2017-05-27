@@ -111,17 +111,23 @@ func (m *Message) UpdateByID(c *gin.Context) {
 		return
 	}
 
-	inserted, err := msg.Update(m.DB)
+	if msg.Username == "" {
+		resp := httputil.NewErrorResponse(errors.New("username is missing"))
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	updated, err := msg.Update(m.DB)
 	if err != nil {
 		resp := httputil.NewErrorResponse(err)
 		c.JSON(http.StatusInternalServerError, resp)
 		return
 	}
 
-	m.Stream <- inserted
+	m.Stream <- updated
 
 	c.JSON(http.StatusCreated, gin.H{
-		"result": inserted,
+		"result": updated,
 		"error":  nil,
 	})
 }
@@ -130,5 +136,14 @@ func (m *Message) UpdateByID(c *gin.Context) {
 func (m *Message) DeleteByID(c *gin.Context) {
 	// 1-4. メッセージを削除しよう
 	// ...
-	c.JSON(http.StatusOK, gin.H{})
+	if err := model.Delete(m.DB, c.Param("id")); err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"result": nil,
+		"error":  nil,
+	})
 }
