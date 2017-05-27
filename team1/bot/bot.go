@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/kaneko/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team1/model"
 )
 
 type (
@@ -79,23 +79,6 @@ func NewOmikujiBot(out chan *model.Message) *Bot {
 	}
 }
 
-// NewOmikujiBot は"大吉", "吉", "中吉", "小吉", "末吉", "凶"のいずれかをランダムで返す新しいBotの構造体のポインタを返します
-func NewGachaBot(out chan *model.Message) *Bot {
-	in := make(chan *model.Message)
-
-	checker := NewRegexpChecker("\\Agacha\\z")
-
-	processor := &GachaProcessor{}
-
-	return &Bot{
-		name:      "gachabot",
-		in:        in,
-		out:       out,
-		checker:   checker,
-		processor: processor,
-	}
-}
-
 // NewKeywordBot はメッセージ本文からキーワードを抽出して返す新しいBotの構造体のポインタを返します
 func NewKeywordBot(out chan *model.Message) *Bot {
 	in := make(chan *model.Message)
@@ -113,24 +96,22 @@ func NewKeywordBot(out chan *model.Message) *Bot {
 	}
 }
 
-// NewKeywordBot はメッセージ本文からキーワードを抽出して返す新しいBotの構造体のポインタを返します
-func NewTalkBot(out chan *model.Message) *Bot {
+// NewShopBot はメッセージ本文からキーワードを抽出して返す新しいBotの構造体のポインタを返します
+func NewShopBot(out chan *model.Message) *Bot {
 	in := make(chan *model.Message)
 
-	checker := NewRegexpChecker("\\Atalk .*")
+	checker := NewRegexpChecker("\\Ashop .*")
 
-	processor := &TalkProcessor{}
+	processor := &ShopProcessor{}
 
 	return &Bot{
-		name:      "talkbot",
+		name:      "shopbot",
 		in:        in,
 		out:       out,
 		checker:   checker,
 		processor: processor,
 	}
 }
-
-
 
 func (b *Bot) respond(m *model.Message) {
 	message := b.processor.Process(m)

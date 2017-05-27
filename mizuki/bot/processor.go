@@ -38,10 +38,10 @@ type (
 
 // talk api response jsonデコードように構造体定義
 type TalkJson struct {
-	status int `json:"status"`
-	message string `json:"message"`
-	Result [] struct {
-		Perplexity int `json:"perplexity"`
+	Status int `json:"status"`
+	Message string `json:"message"`
+	Result []struct {
+		Perplexity float64 `json:"perplexity"`
 		Reply string `json:"reply"`
 	} `json:"results"`
 }
@@ -112,14 +112,15 @@ func (p *TalkProcessor) Process(msgIn *model.Message) *model.Message {
 
 	request_url := talkApiUrlFormat
 	v := url.Values{}
-	v.Set("apikey", env.KeywordApiAppId)
+	v.Set("apikey", env.TalkApiAppId)
 	v.Add("query", text)
 
 	var talk TalkJson
 	post(request_url, v,&talk)
 
 	log.Printf("come here ---------------")
-	log.Printf(talk.Result[0].Reply)
+	// log.Printf(talk.Result[0].Reply)
+	fmt.Printf("%+v\n", talk)
 	keywords := talk.Result[0].Reply
 
 	return &model.Message{
