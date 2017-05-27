@@ -1,7 +1,7 @@
 package bot
 
 import (
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/sakutto/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yusuke/model"
 )
 
 type (

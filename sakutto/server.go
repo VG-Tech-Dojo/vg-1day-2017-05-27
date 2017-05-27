@@ -7,10 +7,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/sakutto/bot"
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/sakutto/controller"
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/sakutto/db"
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/sakutto/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yusuke/bot"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yusuke/controller"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yusuke/db"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yusuke/model"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -50,11 +50,13 @@ func (s *Server) Init(dbconf, env string) error {
 	s.Engine.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{})
 	})
+	s.Engine.GET("/yusuke", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "yusuke.html", gin.H{})
+	})
 	s.Engine.Static("/assets", "./assets")
 
-	s.Engine.GET("/sakutto", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "saku.html", gin.H{})
-	})
+	// tutorial. 自己紹介を追加する
+	// ...
 
 	// api
 	api := s.Engine.Group("/api")
@@ -85,6 +87,8 @@ func (s *Server) Init(dbconf, env string) error {
 	s.bots = append(s.bots, keywordBot)
 	gachaBot := bot.NewGachaBot(s.poster.In)
 	s.bots = append(s.bots, gachaBot)
+	talkBot := bot.NewTalkBot(s.poster.In)
+	s.bots = append(s.bots, talkBot)
 
 	return nil
 }
