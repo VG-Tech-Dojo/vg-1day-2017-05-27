@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"fmt"
-	"github.com/VG-Tech-Dojo/vg-1day-2017/original/env"
-	"github.com/VG-Tech-Dojo/vg-1day-2017/original/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team4/env"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team4/model"
 )
 
 const (

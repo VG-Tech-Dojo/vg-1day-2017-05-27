@@ -7,10 +7,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/VG-Tech-Dojo/vg-1day-2017/original/bot"
-	"github.com/VG-Tech-Dojo/vg-1day-2017/original/controller"
-	"github.com/VG-Tech-Dojo/vg-1day-2017/original/db"
-	"github.com/VG-Tech-Dojo/vg-1day-2017/original/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team4/bot"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team4/controller"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team4/db"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team4/model"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
 )
