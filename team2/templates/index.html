@@ -20,6 +20,7 @@
           :username="message.username"
           :remove-message="removeMessage"
           :update-message="updateMessage"
+          :country="country"
         ></message>
       </div>
     </div>
@@ -27,6 +28,7 @@
       <textarea class="u-full-width" v-model="newMessage.body" placeholder="メッセージ"></textarea>
       <!-- 1-2. ユーザー名を追加しよう-->
       <input type="text" class="u-full-width" v-model="newMessage.username" placeholder="ユーザー名">
+      <input type="text" class="u-full-width" v-model="newMessage.country" placeholder="国">
       <button class="button-primary" v-on:click="sendMessage">Send</button>
     </div>
   </div>
