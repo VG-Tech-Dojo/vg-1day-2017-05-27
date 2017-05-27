@@ -10,7 +10,6 @@
   <div id="app" class="container">
     <div class="row">
       <h5>メッセージアプリ</h5>
-      <p>関西大学大学院の北村です．半年前まで馬乗りでした．
     </div>
     <div class="row">
       <!-- 1-1. ユーザー名を表示しよう -->
@@ -26,9 +25,8 @@
     </div>
     <div class="row">
       <textarea class="u-full-width" v-model="newMessage.body" placeholder="メッセージ"></textarea>
-      <!-- 1-2. ユーザー名を追加しよう
+      <!-- 1-2. ユーザー名を追加しよう -->
       <input type="text" class="u-full-width" v-model="newMessage.username" placeholder="ユーザー名">
-      -->
       <button class="button-primary" v-on:click="sendMessage">Send</button>
     </div>
   </div>
