@@ -27,6 +27,8 @@ type (
 
 	// メッセージ本文からキーワードを抽出するprocessorの構造体です
 	KeywordProcessor struct{}
+
+	WadaiProcessor struct{}
 )
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
@@ -47,6 +49,22 @@ func (p *OmikujiProcessor) Process(msgIn *model.Message) *model.Message {
 		"凶",
 	}
 	result := fortunes[randIntn(len(fortunes))]
+	return &model.Message{
+		Body: result,
+	}
+}
+
+// Process は"大吉", "吉", "中吉", "小吉", "末吉", "凶"のいずれかがbodyにセットされたメッセージへのポインタを返します
+func (p *WadaiProcessor) Process(msgIn *model.Message) *model.Message {
+	fortunes := []string{
+		"シャーロット英王女、もうすぐ2歳に",
+		"ホーキング博士が警告「人類は100年以内に別の惑星に移住必要」",
+		"キャサリン妃の妹が結婚式",
+		"ロンドンマラソン 英王子2人とキャサリン妃が給水係に",
+		"ディズニー映画「メリー・ポピンズ」の続編 イギリスで撮影開始",
+		"「君の名は。」がイギリスで公開され満点評価",
+	}
+	result := "「" + fortunes[randIntn(len(fortunes))] + "」についてどう思いますか？"
 	return &model.Message{
 		Body: result,
 	}
