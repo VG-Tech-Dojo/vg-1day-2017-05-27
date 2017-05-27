@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/sakutto/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team2/model"
 )
 
 type (
@@ -79,22 +79,6 @@ func NewOmikujiBot(out chan *model.Message) *Bot {
 	}
 }
 
-func NewGachaBot(out chan *model.Message) *Bot {
-	in := make(chan *model.Message)
-
-	checker := NewRegexpChecker("\\Agacha\\z")
-
-	processor := &GachaProcessor{}
-
-	return &Bot{
-		name:      "gachabot",
-		in:        in,
-		out:       out,
-		checker:   checker,
-		processor: processor,
-	}
-}
-
 // NewKeywordBot はメッセージ本文からキーワードを抽出して返す新しいBotの構造体のポインタを返します
 func NewKeywordBot(out chan *model.Message) *Bot {
 	in := make(chan *model.Message)
@@ -105,22 +89,6 @@ func NewKeywordBot(out chan *model.Message) *Bot {
 
 	return &Bot{
 		name:      "keywordbot",
-		in:        in,
-		out:       out,
-		checker:   checker,
-		processor: processor,
-	}
-}
-
-func NewTalkBot(out chan *model.Message) *Bot {
-	in := make(chan *model.Message)
-
-	checker := NewRegexpChecker("\\Atalk .*")
-
-	processor := &TalkProcessor{}
-
-	return &Bot{
-		name:      "talkbot",
 		in:        in,
 		out:       out,
 		checker:   checker,
