@@ -7,10 +7,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/kaneko/bot"
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/kaneko/controller"
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/kaneko/db"
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/kaneko/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team1/bot"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team1/controller"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team1/db"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team1/model"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -53,11 +53,6 @@ func (s *Server) Init(dbconf, env string) error {
 	s.Engine.Static("/assets", "./assets")
 
 	// tutorial. 自己紹介を追加する
-
-	s.Engine.GET("/kaneko", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "kaneko.html", gin.H{})
-	})
-
 	// ...
 
 	// api
@@ -87,10 +82,6 @@ func (s *Server) Init(dbconf, env string) error {
 	s.bots = append(s.bots, omikujiBot)
 	keywordBot := bot.NewKeywordBot(s.poster.In)
 	s.bots = append(s.bots, keywordBot)
-	gachaBot := bot.NewGachaBot(s.poster.In)
-	s.bots = append(s.bots, gachaBot)
-	talkBot := bot.NewTalkBot(s.poster.In)
-	s.bots = append(s.bots, talkBot)
 
 	return nil
 }
