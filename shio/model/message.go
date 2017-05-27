@@ -72,7 +72,7 @@ func (m *Message) Insert(db *sql.DB) (*Message, error) {
 
 // 1-3. メッセージを編集しよう
 func (m *Message) Update(db *sql.DB) (*Message, error) {
-	res, err := db.Exec(`update message set (body, username) values (?, ?)`, m.Body, m.Username)
+	res, err := db.Exec(`update message set body = ? where id = ?`, m.Body, m.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -82,9 +82,8 @@ func (m *Message) Update(db *sql.DB) (*Message, error) {
 	}
 
 	return &Message{
-		ID:   id,
-		Body: m.Body,
-		// 1-2. ユーザー名を追加しよう
+		ID:       id,
+		Body:     m.Body,
 		Username: m.Username,
 	}, nil
 }
