@@ -22,6 +22,9 @@ type (
 	// HelloWorldProcessor は"hello, world!"メッセージを作るprocessorの構造体です
 	HelloWorldProcessor struct{}
 
+	//ガチャするよ
+	GachaProcessor struct{}
+
 	// OmikujiProcessor は"大吉", "吉", "中吉", "小吉", "末吉", "凶"のいずれかをランダムで作るprocessorの構造体です
 	OmikujiProcessor struct{}
 
@@ -33,6 +36,22 @@ type (
 func (p *HelloWorldProcessor) Process(msgIn *model.Message) *model.Message {
 	return &model.Message{
 		Body: msgIn.Body + ", world!",
+	}
+}
+
+func (p *GachaProcessor) Process(msgIn *model.Message) *model.Message {
+	ranks := []string{
+		"SSS",
+		"SS",
+		"S",
+		"AAA",
+		"AA",
+		"A",
+	}
+
+	result := ranks[randIntn(len(ranks))]
+	return &model.Message{
+		Body: result,
 	}
 }
 

@@ -3,11 +3,11 @@ package controller
 import (
 	"database/sql"
 	"errors"
-	"net/http"
-
+	"fmt"
 	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/teshiba/httputil"
 	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/teshiba/model"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 // Message is controller for requests to messages
@@ -73,6 +73,7 @@ func (m *Message) Create(c *gin.Context) {
 
 	// 1-2. ユーザー名を追加しよう
 	// ユーザー名が空でも投稿できるようにするかどうかは自分で考えてみよう
+	fmt.Printf(msg.Body)
 
 	inserted, err := msg.Insert(m.DB)
 	if err != nil {

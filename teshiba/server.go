@@ -54,10 +54,8 @@ func (s *Server) Init(dbconf, env string) error {
 
 	// tutorial. 自己紹介を追加する
 	// ...
-	s.Engine.GET("/teshiba", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "teshiba.html", gin.H{})
-	})
-	//
+
+	// api
 	api := s.Engine.Group("/api")
 	api.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
@@ -84,7 +82,8 @@ func (s *Server) Init(dbconf, env string) error {
 	s.bots = append(s.bots, omikujiBot)
 	keywordBot := bot.NewKeywordBot(s.poster.In)
 	s.bots = append(s.bots, keywordBot)
-
+	gachaBot := bot.NewGachaBot(s.poster.In)
+	s.bots = append(s.bots, gachaBot)
 	return nil
 }
 

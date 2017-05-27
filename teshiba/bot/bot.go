@@ -84,11 +84,13 @@ func NewKeywordBot(out chan *model.Message) *Bot {
 	in := make(chan *model.Message)
 
 	checker := NewRegexpChecker("\\Akeyword .*")
+	//checker := NewRegexpChecker("gacha  .*")
 
 	processor := &KeywordProcessor{}
 
 	return &Bot{
-		name:      "keywordbot",
+		//name:      "keywordbot",
+		name:      "NewgachaBot",
 		in:        in,
 		out:       out,
 		checker:   checker,
@@ -100,4 +102,21 @@ func (b *Bot) respond(m *model.Message) {
 	message := b.processor.Process(m)
 	b.out <- message
 	fmt.Printf("%s send: %v\n", b.name, message)
+}
+
+func NewGachaBot(out chan *model.Message) *Bot {
+	in := make(chan *model.Message)
+
+	checker := NewRegexpChecker("\\Agacha\\z")
+
+	processor := &GachaProcessor{}
+
+	return &Bot{
+		name:		"gachabot",
+		in:			in,
+		out:		out,
+		checker:	checker,
+		processor:	processor,
+	}
+
 }
