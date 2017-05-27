@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	keywordApiUrlFormat = "https://jlp.yahooapis.jp/KeyphraseService/V1/extract?appid=%s&sentence=%s&output=json"
+	keywordApiUrlFormat = "https://webservice.recruit.co.jp/ab-road/tour/v1?key=%s&keyword=%s&format=json"
 )
 
 type (
@@ -29,7 +29,7 @@ type (
 	KeywordProcessor struct{}
 	
 	sightSeeingResponse struct {
-		results strct{
+		results struct{
 			spot struct {
 				name string
 				description string
@@ -81,5 +81,22 @@ func (p *KeywordProcessor) Process(msgIn *model.Message) *model.Message {
 
 	return &model.Message{
 		Body: "キーワード：" + strings.Join(keywords, ", "),
+	}
+}
+
+func (p *sightseeingProcessor) Process(msgIn *model.Message) *model.Message {
+	r := regexp.MustCompile("\\Aspot .*")
+	matchedStrings := r.FindStringSubmatch(msgIn.Body)
+	text := matchedStrings[1]
+
+	json := sightSeeingResponse{}
+
+	url := fmt.Sprintf(keywordApiUrlFormat, env.KeywordApiAppId, text)
+
+	get(url, &json)
+
+	return &model.Message {
+		Body: 	json.result.spot[0].name,
+		UserName: "bot",
 	}
 }
