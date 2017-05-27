@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	keywordApiUrlFormat = "https://webservice.recruit.co.jp/ab-road/tour/v1?key=%s&keyword=%s&format=json"
+	keywordApiUrlFormat = "https://webservice.recruit.co.jp/ab-road/spot/v1?key=%s&keyword=%s&format=json"
 )
 
 type (
@@ -28,19 +28,22 @@ type (
 	// メッセージ本文からキーワードを抽出するprocessorの構造体です
 	KeywordProcessor struct{}
 
-	spotStruct struct {
+	SightSeeingProcessor struct{}
+
+	SpotStruct struct {
 		Name        string `json:"name"`
 		Description string `json:"description"`
 		Title       string `json:"title"`
 		Url         string `json:"url"`
 	}
-	SightSeeingProcessor struct{}
 
-	sightSeeingResponse struct {
-		Results struct {
-			Api_version string       `json:"api_version"`
-			Spot        []spotStruct `json:"spot"`
-		} `json:"results"`
+	SightSeeingResult struct {
+		ApiVersion string       `json:"api_version"`
+		Spot       []SpotStruct `json:"spot"`
+	}
+
+	SightSeeingResponse struct {
+		Results SightSeeingResult `json:"results"`
 	}
 )
 
@@ -94,21 +97,26 @@ func (p *SightSeeingProcessor) Process(msgIn *model.Message) *model.Message {
 	fmt.Printf("T:%s\n", matchedStrings[0])
 	text := matchedStrings[1]
 
-	json := sightSeeingResponse{}
+	json := SightSeeingResponse{}
 
 	u := fmt.Sprintf(keywordApiUrlFormat, env.KeywordApiAppId, text)
 	fmt.Printf("URL:%s\n", u)
 
 	get(u, &json)
 
-	fmt.Printf("V:%s", json.Results.Api_version)
+	fmt.Printf("V:%s", json.Results.ApiVersion)
 
 	var body string
-	//	if len(json.Results.Spot) > 0 {
-	body = json.Results.Spot[0].Name
-	//	} else {
-	//		body = "not found"
-	//	}
+	if len(json.Results.Spot) > 0 {
+		for _, res := range json.Results.Spot {
+			if res.Name != "" {
+				body += fmt.Sprintf("%s ", res.Name)
+			}
+		}
+		body += "が有名です。"
+	} else {
+		body = text + "の観光地が見つかりませんでした。"
+	}
 
 	return &model.Message{
 		Body: body,
