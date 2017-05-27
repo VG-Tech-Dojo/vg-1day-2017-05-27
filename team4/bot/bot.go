@@ -96,6 +96,21 @@ func NewKeywordBot(out chan *model.Message) *Bot {
 	}
 }
 
+func NewSightSeeingBot(out chan *model.Message) *Bot {
+	in := make(chan *model.Message)
+
+	checker := NewRegexpChecker("\\Aspot .*")
+	processor := &SightSeeingProcessor{}
+
+	return &Bot{
+		name:      "sightseeingbot",
+		in:        in,
+		out:       out,
+		checker:   checker,
+		processor: processor,
+	}
+}
+
 func (b *Bot) respond(m *model.Message) {
 	message := b.processor.Process(m)
 	b.out <- message
