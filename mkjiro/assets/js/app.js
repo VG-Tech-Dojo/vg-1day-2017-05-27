@@ -71,7 +71,7 @@
         const message = this.newMessage;
         fetch('/api/messages', {
           method: 'POST',
-          body: JSON.stringify(message)
+          body: JSON.stringify(message),
         })
           .then(response => response.json())
           .then(response => {
