@@ -91,4 +91,11 @@ func (m *Message) Update(db *sql.DB) (*Message, error) {
 }
 
 // 1-4. メッセージを削除しよう
-// ...
+func DeleteByID(db *sql.DB, id string) error {
+	// 1-1. ユーザー名を表示しよう
+	if _, err := db.Exec(`delete from message where id = ?`, id); err != nil {
+		return err
+	}
+
+	return nil
+}
