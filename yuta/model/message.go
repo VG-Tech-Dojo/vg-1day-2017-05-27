@@ -66,7 +66,7 @@ func (m *Message) Insert(db *sql.DB) (*Message, error) {
 		ID:   id,
 		Body: m.Body,
 		// 1-2. ユーザー名を追加しよう
-		Username: "sampleuser",
+		Username: m.Username,
 	}, nil
 }
 
