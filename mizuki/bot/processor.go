@@ -14,6 +14,7 @@ import (
 const (
 	keywordApiUrlFormat = "https://jlp.yahooapis.jp/KeyphraseService/V1/extract?appid=%s&sentence=%s&output=json"
 	talkApiUrlFormat = "https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk"
+	restaurantApiUrlFormat = "https://api.gnavi.co.jp/RestSearchAPI/20150630/?keyid=%s&format=json&freeword=%s"
 )
 
 type (
@@ -34,6 +35,8 @@ type (
 	GachaProcessor struct{}
 
 	TalkProcessor struct{}
+
+	RestaurantProcessor struct{}
 )
 
 // talk api response jsonデコードように構造体定義
@@ -44,6 +47,15 @@ type TalkJson struct {
 		Perplexity float64 `json:"perplexity"`
 		Reply string `json:"reply"`
 	} `json:"results"`
+}
+
+//レストラン用
+type RestaurantJson struct {
+	Rest []struct {
+		Name string `json:"name"`
+		Address string `json:"name"`
+		Url string `json:"name"`
+	} `json:"rest"`
 }
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
@@ -125,5 +137,31 @@ func (p *TalkProcessor) Process(msgIn *model.Message) *model.Message {
 
 	return &model.Message{
 		Body: keywords,
+	}
+}
+
+// TalkProcess はテキトーに話したメッセージへのポインタを返します．
+func (p *RestaurantProcessor) Process(msgIn *model.Message) *model.Message {
+	r := regexp.MustCompile("\\Arestaurant (.*)\\z")
+	matchedStrings := r.FindStringSubmatch(msgIn.Body)
+	text := matchedStrings[1]
+
+	url := fmt.Sprintf(restaurantApiUrlFormat , env.RestaurantApiAppId, text)
+
+	var json RestaurantJson
+	get(url, &json)
+
+	log.Printf("come here ---------------")
+	// log.Printf(talk.Result[0].Reply)
+	fmt.Printf("%+v\n", json)
+
+	// keywords := []string{}
+
+	for rest := range map[int]interface(json.Rest) {
+		keywords = append(keywords, rest.Name)
+	}
+
+	return &model.Message{
+		Body: "aaa",
 	}
 }

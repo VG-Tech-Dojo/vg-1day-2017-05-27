@@ -83,16 +83,18 @@ func (s *Server) Init(dbconf, env string) error {
 	poster := bot.NewPoster(10)
 	s.poster = poster
 
-	helloWorldBot := bot.NewHelloWorldBot(s.poster.In)
-	s.bots = append(s.bots, helloWorldBot)
-	omikujiBot := bot.NewOmikujiBot(s.poster.In)
-	s.bots = append(s.bots, omikujiBot)
-	keywordBot := bot.NewKeywordBot(s.poster.In)
-	s.bots = append(s.bots, keywordBot)
-	gachaBot := bot.NewGachaBot(s.poster.In)
-	s.bots = append(s.bots, gachaBot)
-	talkBot := bot.NewTalkBot(s.poster.In)
-	s.bots = append(s.bots, talkBot)
+	// helloWorldBot := bot.NewHelloWorldBot(s.poster.In)
+	// s.bots = append(s.bots, helloWorldBot)
+	// omikujiBot := bot.NewOmikujiBot(s.poster.In)
+	// s.bots = append(s.bots, omikujiBot)
+	// keywordBot := bot.NewKeywordBot(s.poster.In)
+	// s.bots = append(s.bots, keywordBot)
+	// gachaBot := bot.NewGachaBot(s.poster.In)
+	// s.bots = append(s.bots, gachaBot)
+	// talkBot := bot.NewTalkBot(s.poster.In)
+	// s.bots = append(s.bots, talkBot)
+	restaurantBot := bot.NewRestaurantBot(s.poster.In)
+	s.bots = append(s.bots, restaurantBot)
 
 	return nil
 }
