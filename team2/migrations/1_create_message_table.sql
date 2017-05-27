@@ -4,7 +4,7 @@ CREATE TABLE message (
     body TEXT NOT NULL DEFAULT "",
     username TEXT NOT NULL DEFAULT "",
     created TIMESTAMP NOT NULL DEFAULT (DATETIME('now', 'localtime')),
-    updated TIMESTAMP NOT NULL DEFAULT (DATETIME('now', 'localtime'))
+    updated TIMESTAMP NOT NULL DEFAULT (DATETIME('now', 'localtime')),
 );
 
 -- +migrate Down

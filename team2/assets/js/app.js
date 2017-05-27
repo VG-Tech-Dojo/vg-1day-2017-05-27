@@ -8,7 +8,7 @@
 
   Vue.component('message', {
     // 1-1. ユーザー名を表示しよう
-    props: ['id', 'body', 'username', 'removeMessage', 'updateMessage', 'country'],
+    props: ['id', 'body', 'username', 'removeMessage', 'updateMessage', 'country',],
     data() {
       return {
         editing: false,

@@ -2,7 +2,6 @@ package model
 
 import (
 	"database/sql"
-	"fmt"
 )
 
 // Message はメッセージの構造体です
@@ -44,7 +43,7 @@ func MessageByID(db *sql.DB, id string) (*Message, error) {
 	m := &Message{}
 
 	// 1-1. ユーザー名を表示しよう
-	if err := db.QueryRow(`select id, body from message where id = ?`, id).Scan(&m.ID, &m.Body, &m.Username, &m.Country); err != nil {
+	if err := db.QueryRow(`select id, body, country from message where id = ?`, id).Scan(&m.ID, &m.Body, &m.Username, &m.Country); err != nil {
 		return nil, err
 	}
 

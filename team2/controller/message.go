@@ -8,6 +8,7 @@ import (
 	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team2/httputil"
 	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team2/model"
 	"github.com/gin-gonic/gin"
+	"fmt"
 )
 
 // Message is controller for requests to messages
