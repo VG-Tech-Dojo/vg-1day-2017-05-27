@@ -8,7 +8,7 @@ import (
 	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yusuke/httputil"
 	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yusuke/model"
 	"github.com/gin-gonic/gin"
-	"fmt"
+	// "fmt"
 )
 
 // Message is controller for requests to messages
@@ -96,7 +96,7 @@ func (m *Message) Create(c *gin.Context) {
 func (m *Message) UpdateByID(c *gin.Context) {
 	// 1-3. メッセージを編集しよう
 	// ...
-	fmt.Printf("-----------update----------------")
+	// fmt.Printf("-----------update----------------")
 	var ms model.Message
 	if err := c.BindJSON(&ms); err != nil {
 		resp := httputil.NewErrorResponse(err)
@@ -108,7 +108,7 @@ func (m *Message) UpdateByID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, resp)
 		return
 	}
-	fmt.Printf("-----------update2----------------")
+	// fmt.Printf("-----------update2----------------")
 
 
 	update, err := ms.Update(m.DB, c.Param("id"))
@@ -117,7 +117,7 @@ func (m *Message) UpdateByID(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, resp)
 		return
 	}
-	fmt.Printf("-----------update3----------------")
+	// fmt.Printf("-----------update3----------------")
 
 	// bot対応
 	c.JSON(http.StatusCreated, gin.H{
