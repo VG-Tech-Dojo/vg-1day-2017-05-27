@@ -1,8 +1,6 @@
 package bot
 
-import (
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/toshi/model"
-)
+import "github.com/VG-Tech-Dojo/vg-1day-2017-05-27/toshi/model"
 
 const (
 	postURL = "http://localhost:8080/api/messages"
