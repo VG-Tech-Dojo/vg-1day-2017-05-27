@@ -96,7 +96,7 @@ func NewKeywordBot(out chan *model.Message) *Bot {
 	}
 }
 
-//
+// NewGachaBotはテキトーにガチャの結果を返す．
 func NewGachaBot(out chan *model.Message) *Bot {
 	in := make(chan *model.Message)
 
@@ -106,6 +106,23 @@ func NewGachaBot(out chan *model.Message) *Bot {
 
 	return &Bot{
 		name:      "gachabot",
+		in:        in,
+		out:       out,
+		checker:   checker,
+		processor: processor,
+	}
+}
+
+// NewTalkBot はメッセージ本文から文章を抽出して返す新しいBotの文章の構造体のポインタを返します
+func NewTalkBot(out chan *model.Message) *Bot {
+	in := make(chan *model.Message)
+
+	checker := NewRegexpChecker("\\Atalk .*")
+
+	processor := &TalkProcessor{}
+
+	return &Bot{
+		name:      "talkbot",
 		in:        in,
 		out:       out,
 		checker:   checker,
