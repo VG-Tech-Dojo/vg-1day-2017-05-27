@@ -5,12 +5,12 @@ import (
 	"strings"
 
 	"fmt"
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team4/env"
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team4/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yoshio2/env"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yoshio2/model"
 )
 
 const (
-	keywordApiUrlFormat = "https://webservice.recruit.co.jp/ab-road/tour/v1?key=%s&keyword=%s&format=json"
+	keywordApiUrlFormat = "https://jlp.yahooapis.jp/KeyphraseService/V1/extract?appid=%s&sentence=%s&output=json"
 )
 
 type (
@@ -24,20 +24,10 @@ type (
 
 	// OmikujiProcessor は"大吉", "吉", "中吉", "小吉", "末吉", "凶"のいずれかをランダムで作るprocessorの構造体です
 	OmikujiProcessor struct{}
-
+	
+	GachaProcessor struct{}
 	// メッセージ本文からキーワードを抽出するprocessorの構造体です
 	KeywordProcessor struct{}
-	
-	sightSeeingResponse struct {
-		results struct{
-			spot struct {
-				name string
-				description string
-				title string
-				url string
-			}
-		}		
-	}
 )
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
@@ -63,6 +53,18 @@ func (p *OmikujiProcessor) Process(msgIn *model.Message) *model.Message {
 	}
 }
 
+func (p *GachaProcessor) Process(msgIn *model.Message) *model.Message {
+	ranks := []string{
+		"ssレア",
+		"sレア",
+		"レア",
+		"ノーマル",
+	}
+	result := ranks[randIntn(len(ranks))]
+	return &model.Message{
+		Body: result,
+	}
+}
 // Process はメッセージ本文からキーワードを抽出します
 func (p *KeywordProcessor) Process(msgIn *model.Message) *model.Message {
 	r := regexp.MustCompile("\\Akeyword (.*)\\z")
@@ -81,22 +83,5 @@ func (p *KeywordProcessor) Process(msgIn *model.Message) *model.Message {
 
 	return &model.Message{
 		Body: "キーワード：" + strings.Join(keywords, ", "),
-	}
-}
-
-func (p *sightseeingProcessor) Process(msgIn *model.Message) *model.Message {
-	r := regexp.MustCompile("\\Aspot .*")
-	matchedStrings := r.FindStringSubmatch(msgIn.Body)
-	text := matchedStrings[1]
-
-	json := sightSeeingResponse{}
-
-	url := fmt.Sprintf(keywordApiUrlFormat, env.KeywordApiAppId, text)
-
-	get(url, &json)
-
-	return &model.Message {
-		Body: 	json.result.spot[0].name,
-		UserName: "bot",
 	}
 }
