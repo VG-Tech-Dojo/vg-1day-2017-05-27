@@ -27,6 +27,17 @@ type (
 
 	// メッセージ本文からキーワードを抽出するprocessorの構造体です
 	KeywordProcessor struct{}
+	
+	sightSeeingResponse struct {
+		results strct{
+			spot struct {
+				name string
+				description string
+				title string
+				url string
+			}
+		}		
+	}
 )
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
