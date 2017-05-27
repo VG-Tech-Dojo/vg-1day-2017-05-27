@@ -4,7 +4,7 @@ GOOS = darwin
 GOARCH = amd64
 VERSION = $(shell git rev-parse HEAD)
 ENV = test
-host=localhost:8080
+host=localhost:8081
 
 server:
 	go run server.go
