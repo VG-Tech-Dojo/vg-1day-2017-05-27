@@ -27,6 +27,9 @@ type (
 
 	// メッセージ本文からキーワードを抽出するprocessorの構造体です
 	KeywordProcessor struct{}
+
+	// ガチャ結果を出力するやつ
+	GachaProcessor struct{}
 )
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
@@ -70,5 +73,19 @@ func (p *KeywordProcessor) Process(msgIn *model.Message) *model.Message {
 
 	return &model.Message{
 		Body: "キーワード：" + strings.Join(keywords, ", "),
+	}
+}
+
+// Process は"大吉", "吉", "中吉", "小吉", "末吉", "凶"のいずれかがbodyにセットされたメッセージへのポインタを返します
+func (p *GachaProcessor) Process(msgIn *model.Message) *model.Message {
+	gacha := []string{
+		"ノーマル",
+		"レア",
+		"Sレア",
+		"SSレア",
+	}
+	result := gacha[randIntn(len(gacha))]
+	return &model.Message{
+		Body: result, 
 	}
 }
