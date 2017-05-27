@@ -50,10 +50,17 @@ func (s *Server) Init(dbconf, env string) error {
 	s.Engine.GET("/mizuki", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "mizuki.html", gin.H{})
 	})
+	s.Engine.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", gin.H{})
+	})
 	s.Engine.Static("/assets", "./assets")
 
 	// tutorial. 自己紹介を追加する
 	// ...
+	// s.Engine.LoadHTMLGlob("../*/templates/*")
+	// s.Engine.GET("/noza", func(c *gin.Context) {
+	// 	c.HTML(http.StatusOK, "noza.html", gin.H{})
+	// })
 
 	// api
 	api := s.Engine.Group("/api")
