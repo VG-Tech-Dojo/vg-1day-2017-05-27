@@ -8,6 +8,7 @@ import (
 	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yusuke/httputil"
 	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yusuke/model"
 	"github.com/gin-gonic/gin"
+	// "fmt"
 )
 
 // Message is controller for requests to messages
@@ -72,7 +73,7 @@ func (m *Message) Create(c *gin.Context) {
 	}
 
 	// 1-2. ユーザー名を追加しよう
-	msg.UserName = "sample"
+	// msg.UserName = "sample"
 	// ユーザー名が空でも投稿できるようにするかどうかは自分で考えてみよう
 
 	inserted, err := msg.Insert(m.DB)
@@ -95,7 +96,34 @@ func (m *Message) Create(c *gin.Context) {
 func (m *Message) UpdateByID(c *gin.Context) {
 	// 1-3. メッセージを編集しよう
 	// ...
-	c.JSON(http.StatusCreated, gin.H{})
+	// fmt.Printf("-----------update----------------")
+	var ms model.Message
+	if err := c.BindJSON(&ms); err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	if ms.Body == "" {
+		resp := httputil.NewErrorResponse(errors.New("body is missing"))
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+	// fmt.Printf("-----------update2----------------")
+
+
+	update, err := ms.Update(m.DB, c.Param("id"))
+	if err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	// fmt.Printf("-----------update3----------------")
+
+	// bot対応
+	c.JSON(http.StatusCreated, gin.H{
+		"result": update,
+		"error":  nil,
+	})
 }
 
 // DeleteByID は...
