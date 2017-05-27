@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team2/env"
 	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team2/model"
+	"github.com/PuerkitoBio/goquery"
 )
 
 const (
@@ -27,6 +28,8 @@ type (
 
 	// メッセージ本文からキーワードを抽出するprocessorの構造体です
 	KeywordProcessor struct{}
+	// translate
+	TranslateProcessor struct{}
 )
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
@@ -70,5 +73,34 @@ func (p *KeywordProcessor) Process(msgIn *model.Message) *model.Message {
 
 	return &model.Message{
 		Body: "キーワード：" + strings.Join(keywords, ", "),
+	}
+}
+
+func Translate(url string) string {
+	var i string
+	doc, _ := goquery.NewDocument(url)
+	doc.Find("div > div > div > div > div > div > table > tbody > tr > td.content-explanation").Each(func(_ int, s *goquery.Selection) {
+		i = s.Text()
+	})
+
+	return i
+}
+
+
+
+func (p *TranslateProcessor) Process(msgIn *model.Message) *model.Message {
+	r := regexp.MustCompile("\\Atranslate (.*)\\z")
+	matchedStrings := r.FindStringSubmatch(msgIn.Body)
+	text := matchedStrings[1]
+	fmt.Println(text)
+	url := ("http://ejje.weblio.jp/content/" + text)
+
+	gettext := Translate(url)
+	fmt.Println(gettext)
+
+
+
+	return &model.Message{
+		Body: "translate :" + gettext,
 	}
 }
