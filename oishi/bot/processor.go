@@ -11,6 +11,7 @@ import (
 
 const (
 	keywordApiUrlFormat = "https://jlp.yahooapis.jp/KeyphraseService/V1/extract?appid=%s&sentence=%s&output=json"
+	jiroApiUrlFormat = "https://api.gnavi.co.jp/RestSearchAPI/20150630/?keyid=%s&format=json&freeword=二郎&address=%s"
 )
 
 type (
@@ -29,6 +30,8 @@ type (
 
 	// メッセージ本文からキーワードを抽出するprocessorの構造体です
 	KeywordProcessor struct{}
+
+	JiroProcessor struct{}
 )
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
@@ -86,4 +89,28 @@ func (p *KeywordProcessor) Process(msgIn *model.Message) *model.Message {
 	return &model.Message{
 		Body: "キーワード：" + strings.Join(keywords, ", "),
 	}
+}
+
+func (p *JiroProcessor) Process(msgIn *model.Message) *model.Message {
+	r := regexp.MustCompile("\\Ajiro (.*)\\z")
+	matchedStrings := r.FindStringSubmatch(msgIn.Body)
+	text := matchedStrings[1]
+
+	url := fmt.Sprintf(jiroApiUrlFormat, env.JiroApiAppId, text)
+	fmt.Printf("query: %s",url)
+
+	var json interface{}	
+	get(url, &json)
+
+	fmt.Printf("result: %#v",json)
+/*
+	keywords := []string{}
+	for keyword := range map[string]int(json) {
+		keywords = append(keywords, keyword)
+	}
+*/
+	return &model.Message{
+		Body: "",
+	}
+
 }
