@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yamada/httputil"
 	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yamada/model"
@@ -73,6 +74,11 @@ func (m *Message) Create(c *gin.Context) {
 
 	// 1-2. ユーザー名を追加しよう
 	// ユーザー名が空でも投稿できるようにするかどうかは自分で考えてみよう
+	if msg.Body == "" {
+		resp := httputil.NewErrorResponse(errors.New("username is missing"))
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
 
 	inserted, err := msg.Insert(m.DB)
 	if err != nil {
@@ -94,7 +100,43 @@ func (m *Message) Create(c *gin.Context) {
 func (m *Message) UpdateByID(c *gin.Context) {
 	// 1-3. メッセージを編集しよう
 	// ...
-	c.JSON(http.StatusCreated, gin.H{})
+
+	var msg model.Message
+	if err := c.BindJSON(&msg); err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	if msg.Body == "" {
+		resp := httputil.NewErrorResponse(errors.New("body is missing"))
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+	if id < 1 {
+		resp := httputil.NewErrorResponse(errors.New("id should be a positive number"))
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+	msg.ID = id
+
+	updated, err := msg.Update(m.DB)
+	if err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"result": updated,
+		"error":  nil,
+	})
 }
 
 // DeleteByID は...
