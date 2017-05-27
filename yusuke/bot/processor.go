@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"net/url"
 	"regexp"
 	"strings"
 
@@ -11,6 +12,7 @@ import (
 
 const (
 	keywordApiUrlFormat = "https://jlp.yahooapis.jp/KeyphraseService/V1/extract?appid=%s&sentence=%s&output=json"
+	talkApiUrl = "https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk"
 )
 
 type (
@@ -27,9 +29,21 @@ type (
 
 	// メッセージ本文からキーワードを抽出するprocessorの構造体です
 	KeywordProcessor struct{}
-  //
+  //gachagahca
 	NewGachProcessor struct{}
+	//Talk API of recruit
+	TalkProcessor struct{}
 )
+
+
+type TalkJson struct {
+	Status int 					 `json:"status"`
+	Message string			 `json:"message"`
+	Results []struct {
+		Perplexity float64 `json:"perplexity"`
+		Reply string 			 `json:"reply"`
+	} 									 `json:"results"`
+}
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
 func (p *HelloWorldProcessor) Process(msgIn *model.Message) *model.Message {
@@ -85,5 +99,26 @@ func (p *NewGachProcessor) Process(msgIn *model.Message) *model.Message {
 	result := gachagacha[randIntn(len(gachagacha))]
 	return &model.Message{
 		Body: result,
+	}
+}
+
+
+func (p *TalkProcessor) Process(msgIn *model.Message) *model.Message {
+	fmt.Println("------------talk--------------")
+	r := regexp.MustCompile("\\Atalk (.*)\\z")
+	matchedStrings := r.FindStringSubmatch(msgIn.Body)
+	text := matchedStrings[1]
+
+	params := url.Values{
+		"apikey": {env.talkApiAppId},
+		"query":  {text},
+	}
+
+	json := TalkJson{}
+
+	post(talkApiUrl, params, &json)
+
+	return &model.Message{
+		Body: "BOT:" + json.Results[0].Reply,
 	}
 }
