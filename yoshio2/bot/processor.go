@@ -1,16 +1,16 @@
 package bot
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team4/env"
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team4/model"
+	"fmt"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yoshio2/env"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yoshio2/model"
 )
 
 const (
-	keywordApiUrlFormat = "https://webservice.recruit.co.jp/ab-road/spot/v1?key=%s&keyword=%s&format=json"
+	keywordApiUrlFormat = "https://jlp.yahooapis.jp/KeyphraseService/V1/extract?appid=%s&sentence=%s&output=json"
 )
 
 type (
@@ -24,27 +24,10 @@ type (
 
 	// OmikujiProcessor は"大吉", "吉", "中吉", "小吉", "末吉", "凶"のいずれかをランダムで作るprocessorの構造体です
 	OmikujiProcessor struct{}
-
+	
+	GachaProcessor struct{}
 	// メッセージ本文からキーワードを抽出するprocessorの構造体です
 	KeywordProcessor struct{}
-
-	SightSeeingProcessor struct{}
-
-	SpotStruct struct {
-		Name        string `json:"name"`
-		Description string `json:"description"`
-		Title       string `json:"title"`
-		Url         string `json:"url"`
-	}
-
-	SightSeeingResult struct {
-		ApiVersion string       `json:"api_version"`
-		Spot       []SpotStruct `json:"spot"`
-	}
-
-	SightSeeingResponse struct {
-		Results SightSeeingResult `json:"results"`
-	}
 )
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
@@ -70,6 +53,18 @@ func (p *OmikujiProcessor) Process(msgIn *model.Message) *model.Message {
 	}
 }
 
+func (p *GachaProcessor) Process(msgIn *model.Message) *model.Message {
+	ranks := []string{
+		"ssレア",
+		"sレア",
+		"レア",
+		"ノーマル",
+	}
+	result := ranks[randIntn(len(ranks))]
+	return &model.Message{
+		Body: result,
+	}
+}
 // Process はメッセージ本文からキーワードを抽出します
 func (p *KeywordProcessor) Process(msgIn *model.Message) *model.Message {
 	r := regexp.MustCompile("\\Akeyword (.*)\\z")
@@ -88,37 +83,5 @@ func (p *KeywordProcessor) Process(msgIn *model.Message) *model.Message {
 
 	return &model.Message{
 		Body: "キーワード：" + strings.Join(keywords, ", "),
-	}
-}
-
-func (p *SightSeeingProcessor) Process(msgIn *model.Message) *model.Message {
-	r := regexp.MustCompile("\\Aspot (.*)\\z")
-	matchedStrings := r.FindStringSubmatch(msgIn.Body)
-	fmt.Printf("T:%s\n", matchedStrings[0])
-	text := matchedStrings[1]
-
-	json := SightSeeingResponse{}
-
-	u := fmt.Sprintf(keywordApiUrlFormat, env.KeywordApiAppId, text)
-	fmt.Printf("URL:%s\n", u)
-
-	get(u, &json)
-
-	fmt.Printf("V:%s", json.Results.ApiVersion)
-
-	var body string
-	if len(json.Results.Spot) > 0 {
-		for _, res := range json.Results.Spot {
-			if res.Name != "" {
-				body += fmt.Sprintf("%s ", res.Name)
-			}
-		}
-		body += "が有名です。"
-	} else {
-		body = text + "の観光地が見つかりませんでした。"
-	}
-
-	return &model.Message{
-		Body: body,
 	}
 }

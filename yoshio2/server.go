@@ -7,10 +7,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team4/bot"
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team4/controller"
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team4/db"
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/team4/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yoshio2/bot"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yoshio2/controller"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yoshio2/db"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yoshio2/model"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -76,8 +76,6 @@ func (s *Server) Init(dbconf, env string) error {
 	poster := bot.NewPoster(10)
 	s.poster = poster
 
-	sightSeeingBot := bot.NewSightSeeingBot(s.poster.In)
-	s.bots = append(s.bots, sightSeeingBot)
 	helloWorldBot := bot.NewHelloWorldBot(s.poster.In)
 	s.bots = append(s.bots, helloWorldBot)
 	omikujiBot := bot.NewOmikujiBot(s.poster.In)
@@ -85,6 +83,8 @@ func (s *Server) Init(dbconf, env string) error {
 	keywordBot := bot.NewKeywordBot(s.poster.In)
 	s.bots = append(s.bots, keywordBot)
 
+	gachaBot := bot.NewGachaBot(s.poster.In)
+	s.bots = append(s.bots, gachaBot)
 	return nil
 }
 

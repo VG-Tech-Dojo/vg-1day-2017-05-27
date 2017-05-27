@@ -3,7 +3,6 @@ package bot
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -20,7 +19,6 @@ func get(url string, out interface{}) error {
 	defer resp.Body.Close()
 
 	respBody, err := ioutil.ReadAll(resp.Body)
-	fmt.Printf("R:%s\n", respBody)
 	if err != nil {
 		return err
 	}
