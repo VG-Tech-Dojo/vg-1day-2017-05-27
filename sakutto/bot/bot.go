@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/sakutto/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yusuke/model"
 )
 
 type (
@@ -79,22 +79,6 @@ func NewOmikujiBot(out chan *model.Message) *Bot {
 	}
 }
 
-func NewGachaBot(out chan *model.Message) *Bot {
-	in := make(chan *model.Message)
-
-	checker := NewRegexpChecker("\\Agacha\\z")
-
-	processor := &GachaProcessor{}
-
-	return &Bot{
-		name:      "gachabot",
-		in:        in,
-		out:       out,
-		checker:   checker,
-		processor: processor,
-	}
-}
-
 // NewKeywordBot はメッセージ本文からキーワードを抽出して返す新しいBotの構造体のポインタを返します
 func NewKeywordBot(out chan *model.Message) *Bot {
 	in := make(chan *model.Message)
@@ -112,15 +96,16 @@ func NewKeywordBot(out chan *model.Message) *Bot {
 	}
 }
 
-func NewTalkBot(out chan *model.Message) *Bot {
+// ガチャボット
+func NewGachaBot(out chan *model.Message) *Bot {
 	in := make(chan *model.Message)
 
-	checker := NewRegexpChecker("\\Atalk .*")
+	checker := NewRegexpChecker("\\Agacha\\z")
 
-	processor := &TalkProcessor{}
+	processor := &NewGachProcessor{}
 
 	return &Bot{
-		name:      "talkbot",
+		name:      "gachabot",
 		in:        in,
 		out:       out,
 		checker:   checker,
@@ -132,4 +117,21 @@ func (b *Bot) respond(m *model.Message) {
 	message := b.processor.Process(m)
 	b.out <- message
 	fmt.Printf("%s send: %v\n", b.name, message)
+}
+
+//talk
+func NewTalkBot(out chan *model.Message) *Bot {
+	in := make(chan *model.Message)
+
+	checker := NewRegexpChecker("\\Atalk .*\\z")
+
+	processor := &TalkProcessor{}
+
+	return &Bot{
+		name:      "talk",
+		in:        in,
+		out:       out,
+		checker:   checker,
+		processor: processor,
+	}
 }
