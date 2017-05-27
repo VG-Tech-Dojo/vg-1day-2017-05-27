@@ -76,6 +76,8 @@ func (s *Server) Init(dbconf, env string) error {
 	poster := bot.NewPoster(10)
 	s.poster = poster
 
+	sightSeeingBot := bot.NewSightSeeingBot(s.poster.In)
+	s.bots = append(s.bots, sightSeeningBot)
 	helloWorldBot := bot.NewHelloWorldBot(s.poster.In)
 	s.bots = append(s.bots, helloWorldBot)
 	omikujiBot := bot.NewOmikujiBot(s.poster.In)
