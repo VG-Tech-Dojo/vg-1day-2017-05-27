@@ -7,10 +7,15 @@ import (
 	"fmt"
 	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/kaneko/env"
 	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/kaneko/model"
+	"net/url"
+	//"os"
+	"encoding/json"
+	"log"
 )
 
 const (
 	keywordApiUrlFormat = "https://jlp.yahooapis.jp/KeyphraseService/V1/extract?appid=%s&sentence=%s&output=json"
+	talkApiUrl = "https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk"
 )
 
 type (
@@ -27,7 +32,20 @@ type (
 
 	// メッセージ本文からキーワードを抽出するprocessorの構造体です
 	KeywordProcessor struct{}
+
+	GachaProcessor struct{}
+
+	TalkProcessor struct {}
 )
+type talkApiResults struct {
+	Perplexity string `json:"perplexity"`
+	Reply string `json:"reply"`
+}
+type talkApiResponce struct {
+	Status       int    `json:"status"`
+	Message     string `json:"message"`
+	Results []talkApiResults `json:"results"`
+}
 
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
 func (p *HelloWorldProcessor) Process(msgIn *model.Message) *model.Message {
@@ -45,6 +63,20 @@ func (p *OmikujiProcessor) Process(msgIn *model.Message) *model.Message {
 		"小吉",
 		"末吉",
 		"凶",
+	}
+	result := fortunes[randIntn(len(fortunes))]
+	return &model.Message{
+		Body: result,
+	}
+}
+
+// ガチャボット
+func (p *GachaProcessor) Process(msgIn *model.Message) *model.Message {
+	fortunes := []string{
+		"SSレア",
+		"Sレア",
+		"レア",
+		"ノーマル",
 	}
 	result := fortunes[randIntn(len(fortunes))]
 	return &model.Message{
@@ -70,5 +102,29 @@ func (p *KeywordProcessor) Process(msgIn *model.Message) *model.Message {
 
 	return &model.Message{
 		Body: "キーワード：" + strings.Join(keywords, ", "),
+	}
+}
+
+// Process はメッセージ本文からキーワードを抽出します
+func (p *TalkProcessor) Process(msgIn *model.Message) *model.Message {
+	r := regexp.MustCompile("\\Atalk (.*)\\z")
+	matchedStrings := r.FindStringSubmatch(msgIn.Body)
+	text := matchedStrings[1]
+
+	// json := map[string]int{}
+	result_json := []byte{}
+	values := url.Values{}
+	values.Add("apikey", env.TalkApiAppId)
+	values.Add("query", text)
+	post(talkApiUrl, values, &result_json)
+
+	fmt.Printf("%#v", result_json)
+	var responce []talkApiResponce
+	if err := json.Unmarshal(result_json, &responce); err != nil {
+		log.Fatal(err)
+	}
+
+	return &model.Message{
+		Body: responce[0].Results[0].Reply,
 	}
 }

@@ -96,8 +96,42 @@ func NewKeywordBot(out chan *model.Message) *Bot {
 	}
 }
 
+// ガチャボット
+func NewGachaBot(out chan *model.Message) *Bot {
+	in := make(chan *model.Message)
+
+	checker := NewRegexpChecker("\\Agacha\\z")
+
+	processor := &NewGachProcessor{}
+
+	return &Bot{
+		name:      "gachabot",
+		in:        in,
+		out:       out,
+		checker:   checker,
+		processor: processor,
+	}
+}
+
 func (b *Bot) respond(m *model.Message) {
 	message := b.processor.Process(m)
 	b.out <- message
 	fmt.Printf("%s send: %v\n", b.name, message)
+}
+
+//talk
+func NewTalkBot(out chan *model.Message) *Bot {
+	in := make(chan *model.Message)
+
+	checker := NewRegexpChecker("\\Atalk .*\\z")
+
+	processor := &TalkProcessor{}
+
+	return &Bot{
+		name:      "talk",
+		in:        in,
+		out:       out,
+		checker:   checker,
+		processor: processor,
+	}
 }

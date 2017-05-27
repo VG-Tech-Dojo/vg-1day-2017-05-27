@@ -11,6 +11,7 @@ import (
 
 const (
 	keywordApiUrlFormat = "https://jlp.yahooapis.jp/KeyphraseService/V1/extract?appid=%s&sentence=%s&output=json"
+	shopApiUrlFormat = "https://app.rakuten.co.jp/services/api/IchibaItem/Search/20140222?applicationId=%s&keyword=%s"
 )
 
 type (
@@ -59,6 +60,26 @@ func (p *KeywordProcessor) Process(msgIn *model.Message) *model.Message {
 	text := matchedStrings[1]
 
 	url := fmt.Sprintf(keywordApiUrlFormat, env.KeywordApiAppId, text)
+
+	json := map[string]int{}
+	get(url, &json)
+
+	keywords := []string{}
+	for keyword := range map[string]int(json) {
+		keywords = append(keywords, keyword)
+	}
+
+	return &model.Message{
+		Body: "キーワード：" + strings.Join(keywords, ", "),
+	}
+}
+
+func (p *ShopProcessor) Process(msgIn *model.Message) *model.Message {
+	r := regexp.MustCompile("\\Ashop (.*)\\z")
+	matchedStrings := r.FindStringSubmatch(msgIn.Body)
+	text := matchedStrings[1]
+
+	url := fmt.Sprintf(shopApiUrlFormat, env.ShopApiAppId, text)
 
 	json := map[string]int{}
 	get(url, &json)

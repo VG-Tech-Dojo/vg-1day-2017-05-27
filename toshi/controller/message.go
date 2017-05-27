@@ -74,6 +74,12 @@ func (m *Message) Create(c *gin.Context) {
 	// 1-2. ユーザー名を追加しよう
 	// ユーザー名が空でも投稿できるようにするかどうかは自分で考えてみよう
 
+	if msg.UserName == "" {
+		resp := httputil.NewErrorResponse(errors.New("username is missing"))
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
 	inserted, err := msg.Insert(m.DB)
 	if err != nil {
 		resp := httputil.NewErrorResponse(err)
@@ -94,12 +100,46 @@ func (m *Message) Create(c *gin.Context) {
 func (m *Message) UpdateByID(c *gin.Context) {
 	// 1-3. メッセージを編集しよう
 	// ...
-	c.JSON(http.StatusCreated, gin.H{})
+	var msg model.Message
+	if err := c.BindJSON(&msg); err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+
+	if msg.Body == "" {
+		resp := httputil.NewErrorResponse(errors.New("body is missing"))
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	inserted, err := msg.Update(m.DB)
+	if err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+
+	m.Stream <- inserted
+
+	c.JSON(http.StatusCreated, gin.H{
+		"result": inserted,
+		"error":  nil,
+	})
 }
 
 // DeleteByID は...
 func (m *Message) DeleteByID(c *gin.Context) {
 	// 1-4. メッセージを削除しよう
 	// ...
-	c.JSON(http.StatusOK, gin.H{})
+	if err := model.DeleteByID(m.DB, c.Param("id")); err != nil {
+		resp := httputil.NewErrorResponse(err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"result": nil,
+		"error":  nil,
+	})
 }
