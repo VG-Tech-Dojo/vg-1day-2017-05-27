@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"net/url"
 	"regexp"
 	"strings"
 
@@ -63,8 +64,33 @@ func (p *GachaProcessor) Process(msgIn *model.Message) *model.Message {
 	result := ranks[randIntn(len(ranks))]
 	return &model.Message{
 		Body: result,
+		Username: "bot",
 	}
 }
+
+func (p *TalkProcessor) Process(msgIn *model.Message) *model.Message {
+	r := regexp.MustCompile("\\Atalk (.*)\\z")
+	matchedStrings := r.FindStringSubmatch(msgIn.Body)
+	text := matchedStrings[1]
+
+	params := url.Values {
+		"apikey": {env.TalkApiKey},
+		"query": {text},
+	}
+
+	var json interface{}
+
+	url := fmt.Sprintf(keywordApiUrlFormat, env.KeywordApiAppId, text)
+
+	post(url, params, &json)
+
+	
+
+	return &model.Message{
+		Body: "キーワード：" + strings.Join(keywords, ", "),
+	}
+}
+
 // Process はメッセージ本文からキーワードを抽出します
 func (p *KeywordProcessor) Process(msgIn *model.Message) *model.Message {
 	r := regexp.MustCompile("\\Akeyword (.*)\\z")

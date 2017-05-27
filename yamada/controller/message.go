@@ -74,11 +74,11 @@ func (m *Message) Create(c *gin.Context) {
 
 	// 1-2. ユーザー名を追加しよう
 	// ユーザー名が空でも投稿できるようにするかどうかは自分で考えてみよう
-	if msg.Username == "" {
-		resp := httputil.NewErrorResponse(errors.New("username is missing"))
-		c.JSON(http.StatusBadRequest, resp)
-		return
-	}
+	//if msg.Username == "" {
+	//	resp := httputil.NewErrorResponse(errors.New("username is missing"))
+	//	c.JSON(http.StatusBadRequest, resp)
+	//	return
+	//}
 
 	inserted, err := msg.Insert(m.DB)
 	if err != nil {
