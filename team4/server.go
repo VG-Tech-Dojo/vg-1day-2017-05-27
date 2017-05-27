@@ -7,10 +7,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/ayataka/bot"
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/ayataka/controller"
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/ayataka/db"
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/ayataka/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2017/original/bot"
+	"github.com/VG-Tech-Dojo/vg-1day-2017/original/controller"
+	"github.com/VG-Tech-Dojo/vg-1day-2017/original/db"
+	"github.com/VG-Tech-Dojo/vg-1day-2017/original/model"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -48,10 +48,7 @@ func (s *Server) Init(dbconf, env string) error {
 	s.Engine.LoadHTMLGlob("./templates/*")
 
 	s.Engine.GET("/", func(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.html", gin.H{})
-	})
-	s.Engine.GET("/test", func(c *gin.Context) {
-	c.HTML(http.StatusOK, "test.html", gin.H{})
+		c.HTML(http.StatusOK, "index.html", gin.H{})
 	})
 	s.Engine.Static("/assets", "./assets")
 
@@ -85,8 +82,6 @@ func (s *Server) Init(dbconf, env string) error {
 	s.bots = append(s.bots, omikujiBot)
 	keywordBot := bot.NewKeywordBot(s.poster.In)
 	s.bots = append(s.bots, keywordBot)
-	gachaBot := bot.NewGachaBot(s.poster.In)
-	s.bots = append(s.bots, gachaBot)
 
 	return nil
 }
