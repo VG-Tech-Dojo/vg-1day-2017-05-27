@@ -127,8 +127,8 @@ func (m *Message) DeleteByID(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, resp)
 		return
 	}
-	
-	deleted, err := msg.Update(m.DB)
+
+	deleted, err := msg.Delete(m.DB)
 	if err != nil {
 		resp := httputil.NewErrorResponse(err)
 		c.JSON(http.StatusInternalServerError, resp)
@@ -138,6 +138,4 @@ func (m *Message) DeleteByID(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{
 		"result": deleted,
 		"error":  nil})
-}
-	c.JSON(http.StatusOK, gin.H{})
 }
