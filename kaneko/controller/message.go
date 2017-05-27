@@ -80,6 +80,10 @@ func (m *Message) Create(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, resp)
 		return
 	}
+
+	// bot対応
+	m.Stream <- inserted
+
 	c.JSON(http.StatusCreated, gin.H{
 		"result": inserted,
 		"error":  nil,
@@ -110,7 +114,6 @@ func (m *Message) UpdateByID(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, resp)
 	}
 
-	// bot対応
 	c.JSON(http.StatusCreated, gin.H{
 		"result": updated,
 		"error":  nil})
