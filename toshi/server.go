@@ -80,6 +80,8 @@ func (s *Server) Init(dbconf, env string) error {
 	poster := bot.NewPoster(10)
 	s.poster = poster
 
+	gachaBot := bot.NewGachaBot(s.poster.In)
+	s.bots = append(s.bots, gachaBot)
 	helloWorldBot := bot.NewHelloWorldBot(s.poster.In)
 	s.bots = append(s.bots, helloWorldBot)
 	omikujiBot := bot.NewOmikujiBot(s.poster.In)

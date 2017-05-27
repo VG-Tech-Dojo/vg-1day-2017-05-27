@@ -62,6 +62,23 @@ func NewHelloWorldBot(out chan *model.Message) *Bot {
 	}
 }
 
+// NewGachaBot は"SSレア", "Sレア", "レア", "ノーマル"のいずれかをランダムで返す新しいBotの構造体のポインタを返します
+func NewGachaBot(out chan *model.Message) *Bot {
+	in := make(chan *model.Message)
+
+	checker := NewRegexpChecker("gacha")
+
+	processor := &GachaProcessor{}
+
+	return &Bot{
+		name:      "gachabot",
+		in:        in,
+		out:       out,
+		checker:   checker,
+		processor: processor,
+	}
+}
+
 // NewOmikujiBot は"大吉", "吉", "中吉", "小吉", "末吉", "凶"のいずれかをランダムで返す新しいBotの構造体のポインタを返します
 func NewOmikujiBot(out chan *model.Message) *Bot {
 	in := make(chan *model.Message)
@@ -97,6 +114,7 @@ func NewKeywordBot(out chan *model.Message) *Bot {
 }
 
 func (b *Bot) respond(m *model.Message) {
+	fmt.Printf("M:%s\n", m)
 	message := b.processor.Process(m)
 	b.out <- message
 	fmt.Printf("%s send: %v\n", b.name, message)

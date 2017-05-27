@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"fmt"
+
 	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/toshi/env"
 	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/toshi/model"
 )
@@ -19,6 +20,8 @@ type (
 		Process(message *model.Message) *model.Message
 	}
 
+	GachaProcessor struct{}
+
 	// HelloWorldProcessor は"hello, world!"メッセージを作るprocessorの構造体です
 	HelloWorldProcessor struct{}
 
@@ -29,10 +32,25 @@ type (
 	KeywordProcessor struct{}
 )
 
+func (p *GachaProcessor) Process(msgIn *model.Message) *model.Message {
+	rarity := []string{
+		"SSレア",
+		"Sレア",
+		"レア",
+		"ノーマル",
+	}
+	result := rarity[randIntn(len(rarity))]
+	return &model.Message{
+		Body:     result,
+		UserName: msgIn.UserName,
+	}
+}
+
 // Process は"hello, world!"というbodyがセットされたメッセージのポインタを返します
 func (p *HelloWorldProcessor) Process(msgIn *model.Message) *model.Message {
 	return &model.Message{
-		Body: msgIn.Body + ", world!",
+		Body:     msgIn.Body + ", world!",
+		UserName: msgIn.UserName,
 	}
 }
 
@@ -48,7 +66,8 @@ func (p *OmikujiProcessor) Process(msgIn *model.Message) *model.Message {
 	}
 	result := fortunes[randIntn(len(fortunes))]
 	return &model.Message{
-		Body: result,
+		Body:     result,
+		UserName: msgIn.UserName,
 	}
 }
 
@@ -69,6 +88,7 @@ func (p *KeywordProcessor) Process(msgIn *model.Message) *model.Message {
 	}
 
 	return &model.Message{
-		Body: "キーワード：" + strings.Join(keywords, ", "),
+		Body:     "キーワード：" + strings.Join(keywords, ", "),
+		UserName: msgIn.UserName,
 	}
 }

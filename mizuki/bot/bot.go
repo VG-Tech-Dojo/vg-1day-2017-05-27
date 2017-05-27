@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/yamada/model"
+	"github.com/VG-Tech-Dojo/vg-1day-2017-05-27/mizuki/model"
 )
 
 type (
@@ -96,12 +96,13 @@ func NewKeywordBot(out chan *model.Message) *Bot {
 	}
 }
 
+//
 func NewGachaBot(out chan *model.Message) *Bot {
 	in := make(chan *model.Message)
 
 	checker := NewRegexpChecker("\\Agacha\\z")
 
-	processor := &KeywordProcessor{}
+	processor := &GachaProcessor{}
 
 	return &Bot{
 		name:      "gachabot",
