@@ -93,14 +93,27 @@ func (p *TranslateProcessor) Process(msgIn *model.Message) *model.Message {
 	matchedStrings := r.FindStringSubmatch(msgIn.Body)
 	text := matchedStrings[1]
 	fmt.Println(text)
-	url := ("http://ejje.weblio.jp/content/" + text)
+	url := "http://ejje.weblio.jp/content/" + text
 
 	gettext := Translate(url)
+
+	fmt.Println("------------translate------------------")
+	fmt.Println("------------translate------------------")
+	fmt.Println("------------translate------------------")
+
+	fmt.Println(url)
 	fmt.Println(gettext)
 
-
+	fmt.Println("------------translate------------------")
+	fmt.Println("------------translate------------------")
+	fmt.Println("------------translate------------------")
 
 	return &model.Message{
 		Body: "translate :" + gettext,
+	}
+}
+func (p *HelloWorldProcessor) Process(msgIn *model.Message) *model.Message {
+	return &model.Message{
+		Body: msgIn.Body + ", world!",
 	}
 }
